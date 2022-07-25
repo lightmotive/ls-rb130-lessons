@@ -28,25 +28,50 @@ end
 
 # Understand how #reduce(symbol) works:
 p array.reduce(:+) == 15
+p(array.reduce(&:+) \
+  == \
+  array.reduce do |memo, element|
+    memo.send(:+, element)
+  end)
 
 class Something
   def initialize(value)
     @value = value
   end
 
-  def +(*args)
-    new_value = @value
-
-    args.each do |arg|
-      new_value += arg
-    end
-
-    new_value
+  def method(*args)
+    "Value: #{@value} | Args: #{args}"
   end
 end
 
-def extended_arg_yield(object)
-  yield(object, 2, 3)
+def extended_yield(*args)
+  yield(*args)
 end
 
-p extended_arg_yield(Something.new(1), &:+)
+something = Something.new(%w[a b c])
+p(extended_yield(something, 1, 2, 3, &:method) \
+  == \
+  something.send(:method, 1, 2, 3))
+# Or:
+p(extended_yield(something, 1, 2, 3, &:method) \
+  == \
+  extended_yield(something, 1, 2, 3) do |*args|
+    args.first.send(:method, *args[1..])
+  end)
+
+# `Array#reduce` should work the same way:
+puts 'Works the same with Array#reduce?'
+# NOTE: `reduce` accepts a symbol without first converting to Proc.
+p(array.reduce(:+) \
+  == \
+  array.reduce do |*args|
+    args.first.send(:+, *args[1..])
+  end)
+# Yes!
+
+# How about something without extra args?
+puts 'Works the same with single arg yield?'
+bool_arr = [true, false, true]
+p(bool_arr.map(&:!) \
+  == \
+  bool_arr.map { |*args| args.first.send(:!, *args[1..]) })
