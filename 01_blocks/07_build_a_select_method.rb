@@ -10,6 +10,8 @@ def select(from_array_like_collection)
   selected
 end
 
-arr = (1..5).to_a
-p select(arr, &:odd?)
+p select((1..5).to_a, &:odd?)
 # => [1, 3, 5]
+
+p select(1..5, &:even?)
+# => [2, 4]
