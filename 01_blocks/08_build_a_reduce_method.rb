@@ -26,6 +26,10 @@ rescue NoMethodError
   p true
 end
 
+# Extra challenge test cases:
+p(reduce(%w[a b c]) { |acc, value| acc + value } == 'abc')
+p(reduce([[1, 2], %w[a b]]) { |acc, value| acc + value } == [1, 2, 'a', 'b'])
+
 # Understand how #reduce(symbol) works:
 p array.reduce(:+) == 15
 p(array.reduce(&:+) \
