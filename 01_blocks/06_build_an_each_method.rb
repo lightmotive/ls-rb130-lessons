@@ -4,6 +4,8 @@ def each(array)
   array.size.times do |idx|
     yield array[idx]
   end
+
+  array
 end
 
 arr = [1, 2, 3]
