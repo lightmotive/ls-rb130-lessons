@@ -159,6 +159,7 @@ p exception?(IndexError) { list.mark_undone_at(100) }
 # done!
 list.done! # marks all items as done
 p [todo1, todo2, todo3].all?(&:done?)
+p list.done? == true
 
 # ---- Deleting from the list -----
 
