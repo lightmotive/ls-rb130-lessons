@@ -172,7 +172,7 @@ LIST
  )
 
 test_each_counter = 0
-list.each do |todo|
+each_return_val = list.each do |todo|
   p(todo.to_s ==
     case test_each_counter
     when 0 then '[ ] Buy milk'
@@ -181,6 +181,7 @@ list.each do |todo|
     end)
   test_each_counter += 1
 end
+p each_return_val.instance_of?(TodoList)
 
 # ---- Marking items in the list -----
 
