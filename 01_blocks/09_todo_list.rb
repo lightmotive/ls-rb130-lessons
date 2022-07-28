@@ -94,6 +94,10 @@ class TodoList
     todos.dup
   end
 
+  def each
+    todos.each { |todo| yield todo }
+  end
+
   def to_s
     "---- #{title} ----\n" \
     + todos.map(&:to_s).join("\n")
@@ -164,6 +168,17 @@ p(list.to_s == <<~LIST.strip
   [ ] Go to gym
 LIST
  )
+
+test_each_counter = 0
+list.each do |todo|
+  p(todo.to_s ==
+    case test_each_counter
+    when 0 then '[ ] Buy milk'
+    when 1 then '[ ] Clean room'
+    when 2 then '[ ] Go to gym'
+    end)
+  test_each_counter += 1
+end
 
 # ---- Marking items in the list -----
 
