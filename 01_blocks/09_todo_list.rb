@@ -68,33 +68,7 @@ class TodoList
 
   def initialize(title, todos = [])
     @title = title
-    self.todos_from_external = todos
-  end
-
-  # Use this method when displaying a subset of Todos in this list.
-  #
-  # An alternative to this method would require implementing all Enumerable
-  # methods so they return a copy of TodoList. One could implement those methods
-  # in a meta-programming way as follows:
-  # - Remove `include Enumerable`.
-  # - Implement `method_missing` method to handle all Enumerable methods.
-  #   - If the method is not in Enumerable: `super(symbol, *args)`
-  #   - If the method returns a collection that should be a TodoList copy,
-  #     - If no block was provided, chain enumerators where possible.
-  #     - If a block was provided, forward the block to the Enumerable method,
-  #       then `force` (`to_a`), then return a clone with the subset array.
-  #         - A complexity there would be determining the subset name.
-  #   - Forward all other methods to an Enumerable-including clone of `self`,
-  #     and return that invocation.
-  # That's still very complex, and there might be a library to enable such
-  # functionality if needed.
-  # ------
-  # Is it generally best to separate those concerns?
-  def clone_subset_todos(subset_name, todos)
-    clone = self.clone
-    clone.title += " / #{subset_name}"
-    clone.todos_from_internal = todos
-    clone
+    self.todos = todos
   end
 
   def add(todo)
@@ -149,18 +123,46 @@ class TodoList
     + todos.map(&:to_s).join("\n")
   end
 
-  protected
+  private
 
   attr_reader :todos
 
-  def todos_from_external=(array)
+  def todos=(array)
     @todos = []
     array.each { |e| add(e) }
   end
+end
 
-  def todos_from_internal=(array)
-    @todos = array
+# Use this class when displaying a subset of Todos in this list.
+#
+# An alternative to this class would require implementing all Enumerable
+# methods so they return a copy of TodoList. One could implement those methods
+# in a meta-programming way as follows:
+# - Remove `include Enumerable`.
+# - Implement `method_missing` method to handle all Enumerable methods.
+#   - If the method is not in Enumerable: `super(symbol, *args)`
+#   - If the method returns a collection that should be a TodoList copy,
+#     - If no block was provided, chain enumerators where possible.
+#     - If a block was provided, forward the block to the Enumerable method,
+#       then `force` (`to_a`), then return a clone with the subset array.
+#         - A complexity there would be determining the subset name.
+#   - Forward all other methods to an Enumerable-including clone of `self`,
+#     and return that invocation.
+# That's still very complex, and there might be a library to enable such
+# functionality if needed.
+# ------
+# Is it generally best to separate those concerns?
+class TodoListSubset < TodoList
+  def initialize(original_list, subset_title, todo_subset)
+    super(original_list.title + " / #{subset_title}", todo_subset)
+
+    @original_list = original_list
+    @subset_title = subset_title
   end
+
+  private
+
+  attr_reader :original_list, :subset_title
 end
 
 # given
@@ -252,7 +254,7 @@ p(list.to_s == <<~LIST.strip
 LIST
  )
 
-p(list.clone_subset_todos('Sorted by Incomplete', list.sort).to_s == <<~LIST.strip
+p(TodoListSubset.new(list, 'Sorted by Incomplete', list.sort).to_s == <<~LIST.strip
   ---- Today's Todos / Sorted by Incomplete ----
   [ ] Buy milk
   [ ] Go to gym
@@ -260,8 +262,8 @@ p(list.clone_subset_todos('Sorted by Incomplete', list.sort).to_s == <<~LIST.str
 LIST
  )
 
-p list.each
-p list.clone_subset_todos('Completed', list.select(&:done?))
+# p list.each
+# p TodoListSubset.new(list, 'Completed', list.select(&:done?))
 
 # mark_undone_at
 p exception?(ArgumentError) { list.mark_undone_at }
