@@ -96,6 +96,8 @@ class TodoList
 
   def each
     todos.each { |todo| yield todo }
+
+    self
   end
 
   def to_s
