@@ -48,7 +48,7 @@ class TodoList
 
   attr_accessor :title
 
-  def_delegators :@todos, :size, :first, :last, :to_a, :shift, :pop, :empty?
+  def_delegators :@todos, :size, :first, :last, :shift, :pop, :empty?
 
   def initialize(title)
     @title = title
@@ -88,6 +88,10 @@ class TodoList
   def remove_at(idx)
     item_at(idx)
     todos.slice!(idx)
+  end
+
+  def to_a
+    todos.dup
   end
 
   def to_s
