@@ -49,7 +49,7 @@ class TodoList
     @todos = []
   end
 
-  # rest of class needs implementation
+  # rest of class needs implementation...
 end
 
 # given
@@ -58,82 +58,98 @@ todo2 = Todo.new('Clean room')
 todo3 = Todo.new('Go to gym')
 list = TodoList.new("Today's Todos")
 
+# Helper method to test whether exception is raised
+def exception?(expected_class, expected_message = nil)
+  yield
+  false
+rescue expected_class => e
+  true && (!expected_message.nil? && e.message == expected_message)
+end
+
 # ---- Adding to the list -----
 
 # add
 list.add(todo1)                 # adds todo1 to end of list, returns list
 list.add(todo2)                 # adds todo2 to end of list, returns list
-list.add(todo3)                 # adds todo3 to end of list, returns list
-list.add(1)                     # raises TypeError with message "Can only add Todo objects"
+p exception?(TypeError, 'Can only add Todo objects') { list.add(1) }
 
 # <<
 # same behavior as add
-
+concatenated_list = (list << todo3)
+p concatenated_list == list
 # ---- Interrogating the list -----
 
 # size
-p list.size # returns 3
+p list.size == 3
 
 # first
-list.first # returns todo1, which is the first item in the list
+p list.first == todo1
 
 # last
-list.last # returns todo3, which is the last item in the list
+p list.last == todo3
 
 # to_a
-list.to_a # returns an array of all items in the list
+p list.to_a == [todo1, todo2, todo3]
 
 # done?
-list.done? # returns true if all todos in the list are done, otherwise false
+p list.done? == false
 
 # ---- Retrieving an item in the list ----
 
 # item_at
-list.item_at                    # raises ArgumentError
-list.item_at(1)                 # returns 2nd item in list (zero based index)
-list.item_at(100)               # raises IndexError
+p exception?(ArgumentError) { list.item_at }
+p list.item_at(1) == todo2
+p exception?(IndexError) { list.item_at(100) }
+
+# to_s
+p(list.to_s == <<~LIST.strip
+  ---- Today's Todos ----
+  [ ] Buy milk
+  [ ] Clean room
+  [ ] Go to gym
+LIST
+ )
 
 # ---- Marking items in the list -----
 
 # mark_done_at
-list.mark_done_at               # raises ArgumentError
-list.mark_done_at(1)            # marks the 2nd item as done
-list.mark_done_at(100)          # raises IndexError
+p exception?(ArgumentError) { list.mark_done_at }
+list.mark_done_at(1)
+p todo2.done?
+p exception?(IndexError) { list.mark_done_at(100) }
+
+# to_s
+p(list.to_s == <<~LIST.strip
+  ---- Today's Todos ----
+  [ ] Buy milk
+  [X] Clean room
+  [ ] Go to gym
+LIST
+ )
 
 # mark_undone_at
-list.mark_undone_at             # raises ArgumentError
-list.mark_undone_at(1)          # marks the 2nd item as not done,
-list.mark_undone_at(100)        # raises IndexError
+p exception?(ArgumentError) { list.mark_undone_at }
+list.mark_undone_at(1)
+p !todo2.done?
+p exception?(IndexError) { list.mark_undone_at(100) }
 
 # done!
 list.done! # marks all items as done
+p [todo1, todo2, todo3].all?(&:done?)
 
 # ---- Deleting from the list -----
 
+# remove_at
+p exception?(ArgumentError) { list.remove_at }
+removed_todo = list.remove_at(1) # removes and returns the 2nd item
+p removed_todo == todo2
+p exception?(IndexError) { list.remove_at(100) }
+
 # shift
-list.shift # removes and returns the first item in list
+shifted_todo = list.shift # removes and returns the first item in list
+p shifted_todo == todo1
+p list.size == 2
 
 # pop
-list.pop # removes and returns the last item in list
-
-# remove_at
-list.remove_at                  # raises ArgumentError
-list.remove_at(1)               # removes and returns the 2nd item
-list.remove_at(100)             # raises IndexError
-
-# ---- Outputting the list -----
-
-# to_s
-list.to_s # returns string representation of the list
-
-# ---- Today's Todos ----
-# [ ] Buy milk
-# [ ] Clean room
-# [ ] Go to gym
-
-# or, if any todos are done
-
-# ---- Today's Todos ----
-# [ ] Buy milk
-# [X] Clean room
-# [ ] Go to gym
+popped_todo = list.pop # removes and returns the last item in list
+p popped_todo == todo3
