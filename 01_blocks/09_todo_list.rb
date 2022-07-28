@@ -29,6 +29,15 @@ class Todo
     self.done = false
   end
 
+  # We need more info about how to sort items; this is a good default so `done?`
+  # items move to the bottom.
+  # - We could implement customizable sorting with flags that the list would
+  #   set on each `Todo` object when adding items.
+  #   Would there be a better way?
+  def <=>(other)
+    sort_value <=> other.sort_value
+  end
+
   def to_s
     "[#{done? ? DONE_MARKER : UNDONE_MARKER}] #{title}"
   end
@@ -38,6 +47,12 @@ class Todo
       description == other.description &&
       done == other.done
   end
+
+  protected
+
+  def sort_value
+    done? ? 1 : 0
+  end
 end
 
 # This class represents a collection of Todo objects.
@@ -45,14 +60,41 @@ end
 # on a TodoList object, including iteration and selection.
 class TodoList
   extend Forwardable
+  include Enumerable
 
   attr_accessor :title
 
   def_delegators :@todos, :size, :first, :last, :shift, :pop, :empty?
 
-  def initialize(title)
+  def initialize(title, todos = [])
     @title = title
-    @todos = []
+    self.todos_from_external = todos
+  end
+
+  # Use this method when displaying a subset of Todos in this list.
+  #
+  # An alternative to this method would require implementing all Enumerable
+  # methods so they return a copy of TodoList. One could implement those methods
+  # in a meta-programming way as follows:
+  # - Remove `include Enumerable`.
+  # - Implement `method_missing` method to handle all Enumerable methods.
+  #   - If the method is not in Enumerable: `super(symbol, *args)`
+  #   - If the method returns a collection that should be a TodoList copy,
+  #     - If no block was provided, chain enumerators where possible.
+  #     - If a block was provided, forward the block to the Enumerable method,
+  #       then `force` (`to_a`), then return a clone with the subset array.
+  #         - A complexity there would be determining the subset name.
+  #   - Forward all other methods to an Enumerable-including clone of `self`,
+  #     and return that invocation.
+  # That's still very complex, and there might be a library to enable such
+  # functionality if needed.
+  # ------
+  # Is it generally best to separate those concerns?
+  def clone_subset_todos(subset_name, todos)
+    clone = self.clone
+    clone.title += " / #{subset_name}"
+    clone.todos_from_internal = todos
+    clone
   end
 
   def add(todo)
@@ -94,8 +136,10 @@ class TodoList
     todos.dup
   end
 
-  def each
-    todos.each { |todo| yield todo }
+  def each(&block)
+    return to_enum unless block_given?
+
+    todos.each(&block)
 
     self
   end
@@ -105,9 +149,18 @@ class TodoList
     + todos.map(&:to_s).join("\n")
   end
 
-  private
+  protected
 
   attr_reader :todos
+
+  def todos_from_external=(array)
+    @todos = []
+    array.each { |e| add(e) }
+  end
+
+  def todos_from_internal=(array)
+    @todos = array
+  end
 end
 
 # given
@@ -170,18 +223,17 @@ p(list.to_s == <<~LIST.strip
   [ ] Go to gym
 LIST
  )
-
-test_each_counter = 0
-each_return_val = list.each do |todo|
+puts '*** Enumeration ***'
+each_return_val = list.each_with_index do |todo, idx|
   p(todo.to_s ==
-    case test_each_counter
+    case idx
     when 0 then '[ ] Buy milk'
     when 1 then '[ ] Clean room'
     when 2 then '[ ] Go to gym'
     end)
-  test_each_counter += 1
 end
 p each_return_val.instance_of?(TodoList)
+puts '*** End Enumeration ***'
 
 # ---- Marking items in the list -----
 
@@ -199,6 +251,17 @@ p(list.to_s == <<~LIST.strip
   [ ] Go to gym
 LIST
  )
+
+p(list.clone_subset_todos('Sorted by Incomplete', list.sort).to_s == <<~LIST.strip
+  ---- Today's Todos / Sorted by Incomplete ----
+  [ ] Buy milk
+  [ ] Go to gym
+  [X] Clean room
+LIST
+ )
+
+p list.each
+p list.clone_subset_todos('Completed', list.select(&:done?))
 
 # mark_undone_at
 p exception?(ArgumentError) { list.mark_undone_at }
