@@ -48,6 +48,8 @@ class TodoList
 
   attr_accessor :title
 
+  def_delegators :@todos, :size, :first, :last, :to_a, :shift, :pop, :empty?
+
   def initialize(title)
     @title = title
     @todos = []
@@ -61,17 +63,41 @@ class TodoList
     self
   end
 
+  alias << add
+
   def done?
     todos.all?(&:done?)
   end
 
-  alias << add
+  def item_at(idx)
+    todos.fetch(idx)
+  end
+
+  def mark_done_at(idx)
+    item_at(idx).done!
+  end
+
+  def mark_undone_at(idx)
+    item_at(idx).undone!
+  end
+
+  def done!
+    todos.each(&:done!)
+  end
+
+  def remove_at(idx)
+    item_at(idx)
+    todos.slice!(idx)
+  end
+
+  def to_s
+    "---- #{title} ----\n" \
+    + todos.map(&:to_s).join("\n")
+  end
 
   private
 
   attr_reader :todos
-
-  def_delegators :@todos, :size, :first, :last, :to_a
 end
 
 # given
@@ -85,7 +111,9 @@ def exception?(expected_class, expected_message = nil)
   yield
   false
 rescue expected_class => e
-  true && (!expected_message.nil? && e.message == expected_message)
+  return true if expected_message.nil?
+
+  e.message == expected_message
 end
 
 # ---- Adding to the list -----
@@ -172,8 +200,9 @@ p exception?(IndexError) { list.remove_at(100) }
 # shift
 shifted_todo = list.shift # removes and returns the first item in list
 p shifted_todo == todo1
-p list.size == 2
+p list.size == 1
 
 # pop
 popped_todo = list.pop # removes and returns the last item in list
 p popped_todo == todo3
+p list.empty?
