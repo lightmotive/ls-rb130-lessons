@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 # This class represents a todo item and its associated
 # data: name and description. There's also a "done"
 # flag to show whether this todo item is done.
@@ -42,6 +44,8 @@ end
 # You can perform typical collection-oriented actions
 # on a TodoList object, including iteration and selection.
 class TodoList
+  extend Forwardable
+
   attr_accessor :title
 
   def initialize(title)
@@ -49,7 +53,25 @@ class TodoList
     @todos = []
   end
 
-  # rest of class needs implementation...
+  def add(todo)
+    raise TypeError, 'Can only add Todo objects' unless todo.instance_of?(Todo)
+
+    todos.push(todo)
+
+    self
+  end
+
+  def done?
+    todos.all?(&:done?)
+  end
+
+  alias << add
+
+  private
+
+  attr_reader :todos
+
+  def_delegators :@todos, :size, :first, :last, :to_a
 end
 
 # given
@@ -77,6 +99,7 @@ p exception?(TypeError, 'Can only add Todo objects') { list.add(1) }
 # same behavior as add
 concatenated_list = (list << todo3)
 p concatenated_list == list
+
 # ---- Interrogating the list -----
 
 # size
