@@ -19,6 +19,7 @@ class Todo
 
   def done!
     self.done = true
+    self
   end
 
   def done?
@@ -140,6 +141,10 @@ class TodoList
 
   def all_not_done
     select { |todo| !todo.done? }
+  end
+
+  def mark_done(title)
+    find_by_title(title).done!
   end
 
   def to_s
@@ -335,6 +340,8 @@ p exception?(ArgumentError) { list.mark_undone_at }
 list.mark_undone_at(1)
 p !todo2.done?
 p exception?(IndexError) { list.mark_undone_at(100) }
+p list.mark_done('Go to gym') == todo3
+p todo3.done?
 
 # done!
 list.done! # marks all items as done
