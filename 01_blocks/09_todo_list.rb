@@ -134,6 +134,14 @@ class TodoList
     select { |todo| todo.title == title }.to_a.first
   end
 
+  def all_done
+    select(&:done?)
+  end
+
+  def all_not_done
+    select { |todo| !todo.done? }
+  end
+
   def to_s
     "---- #{title} ----\n" \
     + todos.map(&:to_s).join("\n")
@@ -246,7 +254,7 @@ p list.to_a == [todo1, todo2, todo3]
 p list.done? == false
 
 # ---- Retrieving an item in the list ----
-puts "*** Retrieve ***"
+puts '*** Retrieve ***'
 
 # item_at
 p exception?(ArgumentError) { list.item_at }
@@ -318,6 +326,8 @@ LIST
 
 puts '*** Find ***'
 p list.find_by_title('Go to gym') == todo3
+p list.all_done.to_a == [todo2]
+p list.all_not_done.to_a == [todo1, todo3]
 
 puts '*** Mark ***'
 # mark_undone_at
