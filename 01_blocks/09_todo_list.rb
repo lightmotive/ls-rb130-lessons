@@ -130,6 +130,10 @@ class TodoList
     TodoListSubset.new(self, subset_title, todos.select(&block).to_a)
   end
 
+  def find_by_title(title)
+    select { |todo| todo.title == title }.to_a.first
+  end
+
   def to_s
     "---- #{title} ----\n" \
     + todos.map(&:to_s).join("\n")
@@ -211,6 +215,7 @@ rescue expected_class => e
 end
 
 # ---- Adding to the list -----
+puts '*** Add ***'
 
 # add
 list.add(todo1)                 # adds todo1 to end of list, returns list
@@ -223,6 +228,7 @@ concatenated_list = (list << todo3)
 p concatenated_list == list
 
 # ---- Interrogating the list -----
+puts '*** Interrogate ***'
 
 # size
 p list.size == 3
@@ -240,6 +246,7 @@ p list.to_a == [todo1, todo2, todo3]
 p list.done? == false
 
 # ---- Retrieving an item in the list ----
+puts "*** Retrieve ***"
 
 # item_at
 p exception?(ArgumentError) { list.item_at }
@@ -254,7 +261,8 @@ p(list.to_s == <<~LIST.strip
   [ ] Go to gym
 LIST
  )
-puts '*** Enumeration ***'
+
+puts '*** Enumerate ***'
 each_return_val = list.each_with_index do |todo, idx|
   p(todo.to_s ==
     case idx
@@ -264,7 +272,6 @@ each_return_val = list.each_with_index do |todo, idx|
     end)
 end
 p each_return_val.instance_of?(TodoList)
-puts '*** End Enumeration ***'
 
 # ---- Marking items in the list -----
 
@@ -294,7 +301,7 @@ LIST
 puts '*** Select ***'
 selected = list.select(&:done?)
 p selected.to_a == [todo2]
-puts '*** End Select ***'
+
 # Just for demo purposes--one would implement `select` to return
 # `TodoListSubset` instead of an array as is done above.
 # If we did the same for `reject`, we could use Enumerable#reject(&:done?) here
@@ -309,6 +316,7 @@ p(select_subset.to_s == <<~LIST.strip
 LIST
  )
 
+ puts '*** Mark ***'
 # mark_undone_at
 p exception?(ArgumentError) { list.mark_undone_at }
 list.mark_undone_at(1)
@@ -321,6 +329,7 @@ p [todo1, todo2, todo3].all?(&:done?)
 p list.done? == true
 
 # ---- Deleting from the list -----
+puts '*** Delete ***'
 
 # remove_at
 p exception?(ArgumentError) { list.remove_at }
