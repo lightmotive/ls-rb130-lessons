@@ -118,22 +118,27 @@ class TodoList
     self
   end
 
-  # Override Enumerable#select for demonstration purposes
-  def select
+  def select(&block)
     return enum_for(:select) unless block_given?
 
-    todos.each_with_object([]) do |todo, selected|
-      selected.push(todo) if yield(todo)
+    todos.select(&block).each_with_object(copy_without_todos) do |todo, list_copy|
+      list_copy.add(todo)
     end
   end
 
   def select_subset(subset_title, &block)
-    TodoListSubset.new(self, subset_title, todos.select(&block))
+    TodoListSubset.new(self, subset_title, todos.select(&block).to_a)
   end
 
   def to_s
     "---- #{title} ----\n" \
     + todos.map(&:to_s).join("\n")
+  end
+
+  protected
+
+  def clear_todos
+    todos.clear
   end
 
   private
@@ -143,6 +148,11 @@ class TodoList
   def todos=(array)
     @todos = []
     array.each { |e| add(e) }
+  end
+
+  def copy_without_todos
+    TodoList.new(title)
+    # Copy all other attributes (trick: Marshal; otherwise, manually `dup` each one)
   end
 end
 
@@ -281,10 +291,10 @@ p(TodoListSubset.new(list, 'Sorted by Incomplete', list.sort).to_s == <<~LIST.st
 LIST
  )
 
-# p TodoListSubset.new(list, 'Completed', list.select(&:done?))
-results = list.select(&:done?)
-p results == [todo2]
-
+puts '*** Select ***'
+selected = list.select(&:done?)
+p selected.to_a == [todo2]
+puts '*** End Select ***'
 # Just for demo purposes--one would implement `select` to return
 # `TodoListSubset` instead of an array as is done above.
 # If we did the same for `reject`, we could use Enumerable#reject(&:done?) here
