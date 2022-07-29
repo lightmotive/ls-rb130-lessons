@@ -144,7 +144,7 @@ class TodoList
   end
 
   def mark_done(title)
-    find_by_title(title).done!
+    find_by_title(title)&.done!
   end
 
   def mark_all_done
@@ -350,6 +350,7 @@ p !todo2.done?
 p exception?(IndexError) { list.mark_undone_at(100) }
 p list.mark_done('Go to gym') == todo3
 p todo3.done?
+p list.mark_done('vjlas8d77j').nil?
 
 # done!
 list.done! # marks all items as done
