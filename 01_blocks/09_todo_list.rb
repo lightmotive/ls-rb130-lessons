@@ -316,7 +316,10 @@ p(select_subset.to_s == <<~LIST.strip
 LIST
  )
 
- puts '*** Mark ***'
+puts '*** Find ***'
+p list.find_by_title('Go to gym') == todo3
+
+puts '*** Mark ***'
 # mark_undone_at
 p exception?(ArgumentError) { list.mark_undone_at }
 list.mark_undone_at(1)
