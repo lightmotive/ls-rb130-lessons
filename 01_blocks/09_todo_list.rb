@@ -118,6 +118,15 @@ class TodoList
     self
   end
 
+  # Override Enumerable#select for demonstration purposes
+  def select
+    return enum_for(:select) unless block_given?
+
+    todos.each_with_object([]) do |todo, selected|
+      selected.push(todo) if yield(todo)
+    end
+  end
+
   def to_s
     "---- #{title} ----\n" \
     + todos.map(&:to_s).join("\n")
@@ -262,8 +271,9 @@ p(TodoListSubset.new(list, 'Sorted by Incomplete', list.sort).to_s == <<~LIST.st
 LIST
  )
 
-# p list.each
 # p TodoListSubset.new(list, 'Completed', list.select(&:done?))
+results = list.select { |todo| todo.done? }
+p results == [todo2]
 
 # mark_undone_at
 p exception?(ArgumentError) { list.mark_undone_at }
