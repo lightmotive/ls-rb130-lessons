@@ -147,6 +147,14 @@ class TodoList
     find_by_title(title).done!
   end
 
+  def mark_all_done
+    each(&:done!)
+  end
+
+  def mark_all_undone
+    each(&:undone!)
+  end
+
   def to_s
     "---- #{title} ----\n" \
     + todos.map(&:to_s).join("\n")
@@ -347,6 +355,11 @@ p todo3.done?
 list.done! # marks all items as done
 p [todo1, todo2, todo3].all?(&:done?)
 p list.done? == true
+
+list.mark_all_undone
+p !list.done?
+list.mark_all_done
+p list.done?
 
 # ---- Deleting from the list -----
 puts '*** Delete ***'
