@@ -127,6 +127,10 @@ class TodoList
     end
   end
 
+  def select_subset(subset_title, &block)
+    TodoListSubset.new(self, subset_title, todos.select(&block))
+  end
+
   def to_s
     "---- #{title} ----\n" \
     + todos.map(&:to_s).join("\n")
@@ -162,12 +166,18 @@ end
 # ------
 # Is it generally best to separate those concerns?
 class TodoListSubset < TodoList
-  def initialize(original_list, subset_title, todo_subset)
+  def initialize(original_list, subset_title, todo_subset = [])
     super(original_list.title + " / #{subset_title}", todo_subset)
 
     @original_list = original_list
     @subset_title = subset_title
   end
+
+  # What else could we do with this class?
+  # - Include methods for comparing Original and Subset.
+  # - Implement more advanced enumeration options that don't fit into the
+  #   `TodoList` class.
+  # - ...
 
   private
 
@@ -272,8 +282,22 @@ LIST
  )
 
 # p TodoListSubset.new(list, 'Completed', list.select(&:done?))
-results = list.select { |todo| todo.done? }
+results = list.select(&:done?)
 p results == [todo2]
+
+# Just for demo purposes--one would implement `select` to return
+# `TodoListSubset` instead of an array as is done above.
+# If we did the same for `reject`, we could use Enumerable#reject(&:done?) here
+# instead:
+select_subset = list.select_subset('Incomplete') { |todo| !todo.done? }
+p select_subset.instance_of?(TodoListSubset)
+p select_subset.to_a == [todo1, todo3]
+p(select_subset.to_s == <<~LIST.strip
+  ---- Today's Todos / Incomplete ----
+  [ ] Buy milk
+  [ ] Go to gym
+LIST
+ )
 
 # mark_undone_at
 p exception?(ArgumentError) { list.mark_undone_at }
