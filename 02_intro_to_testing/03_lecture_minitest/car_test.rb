@@ -1,4 +1,6 @@
 require 'minitest/autorun'
+require 'minitest/reporters'
+MiniTest::Reporters.use!
 
 require_relative 'car'
 
