@@ -9,4 +9,9 @@ describe 'Car#wheels' do
     car = Car.new
     _(car.wheels).must_equal 4
   end
+
+  it '(fails with 3 wheels)' do
+    car = Car.new
+    _(car.wheels).must_equal 3
+  end
 end
