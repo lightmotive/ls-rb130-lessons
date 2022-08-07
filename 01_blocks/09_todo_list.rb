@@ -28,6 +28,7 @@ class Todo
 
   def undone!
     self.done = false
+    self
   end
 
   # We need more info about how to sort items; this is a good default so `done?`
