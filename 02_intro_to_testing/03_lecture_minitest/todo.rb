@@ -7,7 +7,7 @@ class Todo
   DONE_MARKER = 'X'
   UNDONE_MARKER = ' '
 
-  attr_accessor :title, :description, :done
+  attr_accessor :title, :description
 
   def initialize(title, description = '')
     @title = title
@@ -26,6 +26,7 @@ class Todo
 
   def undone!
     self.done = false
+    self
   end
 
   # We need more info about how to sort items; this is a good default so `done?`
@@ -34,6 +35,8 @@ class Todo
   #   set on each `Todo` object when adding items.
   #   Would there be a better way?
   def <=>(other)
+    return nil unless other.is_a?(Todo)
+
     sort_value <=> other.sort_value
   end
 
@@ -42,9 +45,7 @@ class Todo
   end
 
   def ==(other)
-    title == other.title &&
-      description == other.description &&
-      done == other.done
+    title == other.title
   end
 
   protected
@@ -52,4 +53,8 @@ class Todo
   def sort_value
     done? ? 1 : 0
   end
+
+  private
+
+  attr_accessor :done
 end
