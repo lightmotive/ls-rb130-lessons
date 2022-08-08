@@ -117,6 +117,7 @@ class TodoListTest < TodoListTestCore
     list.mark_done_at(1)
     selected = list.select(&:done?)
     assert_instance_of(TodoList, selected)
+    refute_same(selected, list)
     assert_equal(1, selected.size)
     assert_same(todos[1], selected.first)
   end
