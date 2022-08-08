@@ -158,6 +158,8 @@ class TodoListTest < TodoListTestCore
   def test_remove_at
     removed_todo = list.remove_at(1)
     assert_same(todos[1], removed_todo)
+    todos.slice!(1)
+    assert_equal(todos, list.to_a)
   end
 
   def test_remove_at_exceptions
