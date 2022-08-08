@@ -98,7 +98,7 @@ class TodoListTest < TodoListTestCore
   end
 
   def test_each_return_value
-    assert_same(list.each(&:done!), list)
+    assert_same(list, list.each(&:done!))
   end
 
   def test_mark_done_at
