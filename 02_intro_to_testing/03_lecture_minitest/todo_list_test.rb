@@ -163,28 +163,24 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_remove_at
-    # removed_todo = list.remove_at(1) # removes and returns the 2nd item
-    # p removed_todo == todo2
-    flunk('TBI...')
+    removed_todo = list.remove_at(1)
+    assert_same(todos[1], removed_todo)
   end
 
   def test_remove_at_exceptions
-    # p exception?(ArgumentError) { list.remove_at }
-    # p exception?(IndexError) { list.remove_at(100) }
-    flunk('TBI...')
+    assert_raises(ArgumentError) { list.remove_at }
+    assert_raises(IndexError) { list.remove_at(100) }
   end
 
   def test_shift
-    # shifted_todo = list.shift # removes and returns the first item in list
-    # p shifted_todo == todo1
-    # p list.size == 1
-    flunk('TBI...')
+    shifted_todo = list.shift
+    assert_same(todos.first, shifted_todo)
+    assert_equal(2, list.size)
   end
 
   def test_pop
-    # popped_todo = list.pop # removes and returns the last item in list
-    # p popped_todo == todo3
-    # p list.empty?
-    flunk('TBI...')
+    popped_todo = list.pop
+    assert_same(todos.last, popped_todo)
+    assert_equal(2, list.size)
   end
 end
