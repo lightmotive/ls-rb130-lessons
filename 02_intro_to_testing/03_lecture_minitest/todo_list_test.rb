@@ -130,41 +130,36 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_mark_undone_at
-    # list.mark_undone_at(1)
-    # p !todo2.done?
-    flunk('TBI...')
+    list.done!
+    list.mark_undone_at(1)
+    refute(todos[1].done?)
   end
 
   def test_mark_undone_at_exceptions
-    # p exception?(ArgumentError) { list.mark_undone_at }
-    # p exception?(IndexError) { list.mark_undone_at(100) }
-    flunk('TBI...')
+    assert_raises(ArgumentError) { list.mark_undone_at }
+    assert_raises(IndexError) { list.mark_undone_at(100) }
   end
 
   def test_mark_done
-    # p list.mark_done('Go to gym') == todo3
-    # p todo3.done?
-    # p list.mark_done('vjlas8d77j').nil?
-    flunk('TBI...')
+    assert_same(todos.first, list.mark_done(todos.first.title))
+    assert(todos.first.done?)
+    assert_nil(list.mark_done('vjlas8d77j'))
   end
 
   def test_done!
-    # list.done! # marks all items as done
-    # p [todo1, todo2, todo3].all?(&:done?)
-    # p list.done? == true
-    flunk('TBI...')
+    list.done!
+    assert(todos.all?(&:done?))
+    assert(list.done?)
   end
 
   def test_mark_all_undone
-    # list.mark_all_undone
-    # p !list.done?
-    flunk('TBI...')
+    list.mark_all_undone
+    assert(todos.none?(&:done?))
   end
 
   def test_mark_all_done
-    # list.mark_all_done
-    # p list.done?
-    flunk('TBI...')
+    list.mark_all_done
+    assert(list.done?)
   end
 
   def test_remove_at
