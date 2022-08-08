@@ -124,6 +124,8 @@ class TodoListTest < TodoListTestCore
     list.done!
     list.mark_undone_at(1)
     refute(todos[1].done?)
+    assert(todos[0].done?)
+    assert(todos[2].done?)
   end
 
   def test_mark_undone_at_exceptions
