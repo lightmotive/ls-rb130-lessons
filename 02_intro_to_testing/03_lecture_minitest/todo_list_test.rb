@@ -22,7 +22,7 @@ class TodoListTest < MiniTest::Test
 
   def test_add
     add_returned = list.add(todos[0])
-    assert_equal(4, list.size)
+    assert_equal(list_default_size + 1, list.size)
     assert_same(todos.first, list.last)
     assert_instance_of(TodoList, add_returned)
   end
@@ -39,7 +39,7 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_size
-    assert_equal(3, list.size)
+    assert_equal(list_default_size, list.size)
   end
 
   def test_first
@@ -176,12 +176,12 @@ class TodoListTest < MiniTest::Test
   def test_shift
     shifted_todo = list.shift
     assert_same(todos.first, shifted_todo)
-    assert_equal(2, list.size)
+    assert_equal(list_default_size - 1, list.size)
   end
 
   def test_pop
     popped_todo = list.pop
     assert_same(todos.last, popped_todo)
-    assert_equal(2, list.size)
+    assert_equal(list_default_size - 1, list.size)
   end
 end
