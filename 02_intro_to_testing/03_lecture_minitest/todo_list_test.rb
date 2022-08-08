@@ -164,6 +164,9 @@ class TodoListTest < TodoListTestCore
     shifted_todo = list.shift
     assert_same(todos.first, shifted_todo)
     assert_equal(list_default_size - 1, list.size)
+    shifted_todos = list.shift(2)
+    assert_equal(todos[1..2], shifted_todos)
+    assert_equal(list_default_size - 3, list.size)
   end
 
   def test_pop
