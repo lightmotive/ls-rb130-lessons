@@ -173,5 +173,8 @@ class TodoListTest < TodoListTestCore
     popped_todo = list.pop
     assert_same(todos.last, popped_todo)
     assert_equal(list_default_size - 1, list.size)
+    popped_todos = list.pop(2)
+    assert_equal(todos[0..1], popped_todos)
+    assert_equal(list_default_size - 3, list.size)
   end
 end
