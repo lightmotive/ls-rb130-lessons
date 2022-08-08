@@ -20,47 +20,43 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_add
-    # list.add(todo1)                 # adds todo1 to end of list, returns list
-    # test that return value is instance of TodoList
-    flunk('TBI...')
+    add_returned = list.add(@todos[0])
+    assert_equal(4, list.size)
+    assert_same(@todos.last, list.last)
+    assert_instance_of(TodoList, add_returned)
   end
 
   def test_add_left_left
-    # <<
-    # same behavior as add
-    # concatenated_list = (list << todo3)
-    # p concatenated_list == list
-    flunk('TBI...')
+    concatenated_list = (list << @todos[1])
+    assert_same(concatenated_list, list)
+    assert_equal(@todos[1], list.last)
   end
 
   def test_add_exceptions
-    # p exception?(TypeError, 'Can only add Todo objects') { list.add(1) }
-    flunk('TBI...')
+    exception = assert_raises(TypeError) { list.add(1) }
+    assert_equal('Can only add Todo objects', exception.message)
   end
 
   def test_size
-    # p list.size == 3
-    flunk('TBI...')
+    assert_equal(3, list.size)
   end
 
   def test_first
-    # p list.first == todo1
-    flunk('TBI...')
+    assert_same(@todos.first, list.first)
   end
 
   def test_last
-    # p list.last == todo3
-    flunk('TBI...')
+    assert_same(@todos.last, list.last)
   end
 
   def test_to_a
-    # p list.to_a == [todo1, todo2, todo3]
-    flunk('TBI...')
+    assert_equal(@todos, list.to_a)
   end
 
   def test_done?
-    # p list.done? == false
-    flunk('TBI...')
+    refute(list.done?)
+    list.each(&:done!)
+    assert(list.done?)
   end
 
   def test_item_at
