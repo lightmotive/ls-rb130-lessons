@@ -89,6 +89,8 @@ class TodoListTest < TodoListTestCore
   def test_mark_done_at
     list.mark_done_at(1)
     assert(todos[1].done?)
+    refute(todos[0].done?)
+    refute(todos[2].done?)
   end
 
   def test_mark_done_at_exceptions
