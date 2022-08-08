@@ -22,7 +22,7 @@ class TodoListTest < MiniTest::Test
   def test_add
     add_returned = list.add(@todos[0])
     assert_equal(4, list.size)
-    assert_same(@todos.last, list.last)
+    assert_same(todos.last, list.last)
     assert_instance_of(TodoList, add_returned)
   end
 
@@ -42,15 +42,15 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_first
-    assert_same(@todos.first, list.first)
+    assert_same(todos.first, list.first)
   end
 
   def test_last
-    assert_same(@todos.last, list.last)
+    assert_same(todos.last, list.last)
   end
 
   def test_to_a
-    assert_equal(@todos, list.to_a)
+    assert_equal(todos, list.to_a)
   end
 
   def test_done?
@@ -60,46 +60,41 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_item_at
-    # p list.item_at(1) == todo2
-    flunk('TBI...')
+    assert_same(todos[1], list.item_at(1))
   end
 
   def test_item_at_exceptions
-    # p exception?(ArgumentError) { list.item_at }
-    # p exception?(IndexError) { list.item_at(100) }
-    flunk('TBI...')
+    assert_raises(ArgumentError) { list.item_at }
+    assert_raises(IndexError) { list.item_at(100) }
   end
 
-  def test_to_s
-    # p(list.to_s == <<~LIST.strip
-    #   ---- Today's Todos ----
-    #   [ ] Buy milk
-    #   [ ] Clean room
-    #   [ ] Go to gym
-    # LIST
-    #  )
-    flunk('TBI...')
-    # ...mark_done_at(1)
-    # p(list.to_s == <<~LIST.strip
-    #   ---- Today's Todos ----
-    #   [ ] Buy milk
-    #   [X] Clean room
-    #   [ ] Go to gym
-    # LIST
-    #  )
+  def test_to_s_nothing_completed
+    expected = <<~LIST.strip
+      ---- #{list_default_title} ----
+      [ ] Buy milk
+      [ ] Clean room
+      [ ] Go to gym
+    LIST
+    assert_equal(expected, list.to_s)
+  end
+
+  def test_to_s_one_completed
+    list.mark_done_at(1)
+
+    expected = <<~LIST.strip
+      ---- #{list_default_title} ----
+      [ ] Buy milk
+      [X] Clean room
+      [ ] Go to gym
+    LIST
+    assert_equal(expected, list.to_s)
   end
 
   def test_each_enumeration_and_return_value
-    # each_return_val = list.each_with_index do |todo, idx|
-    #   p(todo.to_s ==
-    #     case idx
-    #     when 0 then '[ ] Buy milk'
-    #     when 1 then '[ ] Clean room'
-    #     when 2 then '[ ] Go to gym'
-    #     end)
-    # end
-    # p each_return_val.instance_of?(TodoList)
-    flunk('TBI...')
+    each_return_val = list.each_with_index do |todo, idx|
+      assert_same(todos[idx], todo)
+    end
+    assert_instance_of(TodoList, each_return_val)
   end
 
   def test_mark_done_at
