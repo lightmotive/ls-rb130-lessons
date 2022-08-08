@@ -121,6 +121,10 @@ class TodoList
 
   def copy_without_todos
     TodoList.new(title)
-    # Copy all other attributes (trick: Marshal; otherwise, manually `dup` each one)
+    # Copy all other attributes...
+    # Copy options:
+    # - Use a Gem (no maintained Gems are available except one for Rails ActiveRecord cloning)
+    # - Use trick: clone = Marshal.load(Marshal.dump(obj)) -- tricky and can be a security risk
+    # - Manually set and `dup` each value here (requires maintenance when class changes)
   end
 end
