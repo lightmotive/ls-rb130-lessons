@@ -98,36 +98,35 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_mark_done_at
-    # list.mark_done_at(1)
-    # p todo2.done?
-    flunk('TBI...')
+    list.mark_done_at(1)
+    assert(todos[1].done?)
   end
 
   def test_mark_done_at_exceptions
-    # p exception?(ArgumentError) { list.mark_done_at }
-    # p exception?(IndexError) { list.mark_done_at(100) }
-    flunk('TBI...')
+    assert_raises(ArgumentError) { list.mark_done_at }
+    assert_raises(IndexError) { list.mark_done_at(100) }
   end
 
   def test_select
-    # selected = list.select(&:done?)
-    # p selected.to_a == [todo2]
-    flunk('TBI...')
+    list.mark_done_at(1)
+    selected = list.select(&:done?)
+    assert_instance_of(TodoList, selected)
+    assert_equal(1, selected.size)
+    assert_same(todos[1], selected.first)
   end
 
   def test_find_by_title
-    # p list.find_by_title('Go to gym') == todo3
-    flunk('TBI...')
+    assert_same(todos.last, list.find_by_title(todos.last.title))
   end
 
   def test_all_done
-    # p list.all_done.to_a == [todo2]
-    flunk('TBI...')
+    assert_empty(list.all_done)
+    list.done!
+    assert_equal(todos, list.to_a)
   end
 
   def test_all_not_done
-    # p list.all_not_done.to_a == [todo1, todo3]
-    flunk('TBI...')
+    assert_equal(todos, list.all_not_done)
   end
 
   def test_mark_undone_at
