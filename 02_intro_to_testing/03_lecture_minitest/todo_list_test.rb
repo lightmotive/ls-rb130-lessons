@@ -91,11 +91,14 @@ class TodoListTest < TodoListTestCore
     assert_equal(expected, list.to_s)
   end
 
-  def test_each_enumeration_and_return_value
+  def test_each_enumeration
     each_return_val = list.each_with_index do |todo, idx|
       assert_same(todos[idx], todo)
     end
-    assert_instance_of(TodoList, each_return_val)
+  end
+
+  def test_each_return_value
+    assert_same(list.each(&:done!), list)
   end
 
   def test_mark_done_at
