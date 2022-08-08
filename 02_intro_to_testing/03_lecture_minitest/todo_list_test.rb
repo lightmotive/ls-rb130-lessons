@@ -14,10 +14,11 @@ class TodoListTest < TodoListTestCore
     assert_instance_of(TodoList, add_returned)
   end
 
-  def test_add_left_left
+  def test_shovel
     concatenated_list = (list << todos[1])
+    todos << todos[1]
     assert_same(concatenated_list, list)
-    assert_equal(todos[1], list.last)
+    assert_equal(todos, list.to_a)
   end
 
   def test_add_exceptions
