@@ -79,6 +79,18 @@ class TodoListTest < TodoListTestCore
     assert_equal(expected, list.to_s)
   end
 
+  def test_to_s_all_completed
+    list.done!
+
+    expected = <<~LIST.strip
+      ---- #{list_default_title} ----
+      [X] Buy milk
+      [X] Clean room
+      [X] Go to gym
+    LIST
+    assert_equal(expected, list.to_s)
+  end
+
   def test_each_enumeration_and_return_value
     each_return_val = list.each_with_index do |todo, idx|
       assert_same(todos[idx], todo)
