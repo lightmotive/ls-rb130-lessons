@@ -7,29 +7,30 @@ MiniTest::Reporters.use!
 require_relative 'todo_list'
 
 class TodoListTest < MiniTest::Test
-  attr_reader :list, :list_default_title, :todos
+  attr_reader :list, :list_default_title, :todos, :list_default_size
 
   def setup
     todo1 = Todo.new('Buy milk')
     todo2 = Todo.new('Clean room')
     todo3 = Todo.new('Go to gym')
     @todos = [todo1, todo2, todo3]
+    @list_default_size = todos.size
 
     @list_default_title = "Test Today's Todos"
     @list = TodoList.new(@list_default_title, todos)
   end
 
   def test_add
-    add_returned = list.add(@todos[0])
+    add_returned = list.add(todos[0])
     assert_equal(4, list.size)
-    assert_same(todos.last, list.last)
+    assert_same(todos.first, list.last)
     assert_instance_of(TodoList, add_returned)
   end
 
   def test_add_left_left
-    concatenated_list = (list << @todos[1])
+    concatenated_list = (list << todos[1])
     assert_same(concatenated_list, list)
-    assert_equal(@todos[1], list.last)
+    assert_equal(todos[1], list.last)
   end
 
   def test_add_exceptions
@@ -126,7 +127,7 @@ class TodoListTest < MiniTest::Test
   end
 
   def test_all_not_done
-    assert_equal(todos, list.all_not_done)
+    assert_equal(todos, list.all_not_done.to_a)
   end
 
   def test_mark_undone_at
