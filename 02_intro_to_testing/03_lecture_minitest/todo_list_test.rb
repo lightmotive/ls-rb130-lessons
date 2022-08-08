@@ -9,9 +9,9 @@ require_relative 'todo_list_test_core'
 class TodoListTest < TodoListTestCore
   def test_add
     add_returned = list.add(todos[0])
-    assert_equal(list_default_size + 1, list.size)
-    assert_same(todos.first, list.last)
-    assert_instance_of(TodoList, add_returned)
+    todos << todos[0]
+    assert_same(add_returned, list)
+    assert_equal(todos, list.to_a)
   end
 
   def test_shovel
