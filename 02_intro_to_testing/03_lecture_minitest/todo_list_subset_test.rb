@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+require 'simplecov'
+SimpleCov.start
+
 require 'minitest/autorun'
 require 'minitest/reporters'
 MiniTest::Reporters.use!
@@ -28,11 +33,3 @@ class TodoListSubsetTest < TodoListTestCore
     assert_equal("#{list.title} / #{list_subset_default_title}", list_subset.title)
   end
 end
-
-# p(TodoListSubset.new(list, 'Sorted by Incomplete', list.sort).to_s == <<~LIST.strip
-#   ---- Today's Todos / Sorted by Incomplete ----
-#   [ ] Buy milk
-#   [ ] Go to gym
-#   [X] Clean room
-# LIST
-#  )
