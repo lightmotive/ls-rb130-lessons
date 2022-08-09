@@ -49,7 +49,7 @@ class TodoTest < MiniTest::Test
 
   def test_equal
     todo_other = Todo.new(todo_default_title)
-    assert(todo == todo_other)
+    assert_equal(todo_other, todo)
   end
 
   def test_not_equal

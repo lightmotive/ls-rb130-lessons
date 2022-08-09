@@ -43,9 +43,9 @@ class TodoListTest < TodoListTestCore
   end
 
   def test_done?
-    refute(list.done?)
+    assert_equal(false, list.done?)
     list.each(&:done!)
-    assert(list.done?)
+    assert_equal(true, list.done?)
   end
 
   def test_item_at
@@ -103,9 +103,9 @@ class TodoListTest < TodoListTestCore
 
   def test_mark_done_at
     list.mark_done_at(1)
-    assert(todos[1].done?)
-    refute(todos[0].done?)
-    refute(todos[2].done?)
+    assert_equal(true, todos[1].done?)
+    assert_equal(false, todos[0].done?)
+    assert_equal(false, todos[2].done?)
   end
 
   def test_mark_done_at_exceptions
@@ -139,9 +139,9 @@ class TodoListTest < TodoListTestCore
   def test_mark_undone_at
     list.done!
     list.mark_undone_at(1)
-    refute(todos[1].done?)
-    assert(todos[0].done?)
-    assert(todos[2].done?)
+    assert_equal(false, todos[1].done?)
+    assert_equal(true, todos[0].done?)
+    assert_equal(true, todos[2].done?)
   end
 
   def test_mark_undone_at_exceptions
@@ -151,24 +151,24 @@ class TodoListTest < TodoListTestCore
 
   def test_mark_done
     assert_same(todos.first, list.mark_done(todos.first.title))
-    assert(todos.first.done?)
+    assert_equal(true, todos.first.done?)
     assert_nil(list.mark_done('vjlas8d77j'))
   end
 
   def test_done!
     list.done!
-    assert(todos.all?(&:done?))
-    assert(list.done?)
+    assert_equal(true, todos.all?(&:done?))
+    assert_equal(true, list.done?)
   end
 
   def test_mark_all_undone
     list.mark_all_undone
-    assert(todos.none?(&:done?))
+    assert_equal(true, todos.none?(&:done?))
   end
 
   def test_mark_all_done
     list.mark_all_done
-    assert(list.done?)
+    assert_equal(true, list.done?)
   end
 
   def test_remove_at
