@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'todo'
+require './lib/todo'
 
 class TodoTest < MiniTest::Test
   attr_reader :todo, :todo_default_title

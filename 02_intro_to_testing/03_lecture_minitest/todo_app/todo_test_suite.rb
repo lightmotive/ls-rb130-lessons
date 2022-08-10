@@ -7,6 +7,8 @@ require 'minitest/autorun'
 require 'minitest/reporters'
 MiniTest::Reporters.use!
 
-require_relative 'todo_test'
-require_relative 'todo_list_test'
-require_relative 'todo_list_subset_test'
+# Create a rake task to automate tests
+
+require './test/todo_test'
+require './test/todo_list_test'
+require './test/todo_list_subset_test'

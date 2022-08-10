@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'todo_list'
+require './lib/todo_list'
 
 class TodoListTestCore < MiniTest::Test
   attr_reader :list, :list_default_title, :todos, :list_default_size

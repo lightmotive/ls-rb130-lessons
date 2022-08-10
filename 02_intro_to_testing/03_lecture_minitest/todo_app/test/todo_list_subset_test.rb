@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require './lib/todo_list_subset'
 require_relative 'todo_list_test_core'
-require_relative 'todo_list_subset'
 
 class TodoListSubsetTest < TodoListTestCore
   attr_reader :list_subset, :list_subset_default_title, :todos_subset

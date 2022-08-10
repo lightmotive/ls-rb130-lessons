@@ -88,7 +88,7 @@ class TodoListTest < TodoListTestCore
   end
 
   def test_each_enumeration
-    each_return_val = list.each_with_index do |todo, idx|
+    list.each_with_index do |todo, idx|
       assert_same(todos[idx], todo)
     end
   end
