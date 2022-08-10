@@ -15,6 +15,6 @@ MiniTest::Reporters.use!
 # https://backend.turing.edu/module1/lessons/project_etiquette#:~:text=with%20the%20flow.-,rakefiles,-Rake%20tasks%20come
 # https://www.stuartellis.name/articles/rake/
 
-require './test/todo_test'
-require './test/todo_list_test'
-require './test/todo_list_subset_test'
+require_relative 'todo_test'
+require_relative 'todo_list_test'
+require_relative 'todo_list_subset_test'
