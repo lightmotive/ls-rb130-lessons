@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-require 'simplecov'
-SimpleCov.start
-
-require 'minitest/autorun'
-require 'minitest/reporters'
-MiniTest::Reporters.use!
-
 require_relative 'todo_list_test_core'
 require_relative 'todo_list_subset'
 

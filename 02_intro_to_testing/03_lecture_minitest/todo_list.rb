@@ -104,12 +104,6 @@ class TodoList
     + todos.map(&:to_s).join("\n")
   end
 
-  protected
-
-  def clear_todos
-    todos.clear
-  end
-
   private
 
   attr_reader :todos
