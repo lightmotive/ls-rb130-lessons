@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'test_helper'
 require_relative 'todo_list_test_core'
 
 class TodoListTest < TodoListTestCore
